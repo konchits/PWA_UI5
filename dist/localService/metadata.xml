@@ -1,0 +1,50 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
+	<edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="2.0">
+		<Schema xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"
+			xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2008/09/edm"
+			Namespace="default">
+			<EntityType Name="EuropeType">
+				<Key>
+					<PropertyRef Name="Iso_code"/>
+				</Key>
+				<Property Name="Iso_code" Type="Edm.String" MaxLength="3"/>
+				<Property Name="Name" Type="Edm.String" MaxLength="40"/>
+				<Property Name="Capital" Type="Edm.String" MaxLength="40"/>
+				<Property Name="Area" Type="Edm.Decimal" Precision="10" Scale="2"/>
+				<Property Name="Population" Type="Edm.Decimal" Precision="13" Scale="2"/>
+				<NavigationProperty Name="ToCity" Relationship="default.Country_CityType" FromRole="EuropePrincipal" ToRole="CitiesDependent"/>
+			</EntityType>
+			<EntityType Name="CitiesType">
+				<Key>
+					<PropertyRef Name="CityId"/>
+				</Key>
+				<Property Name="CityId" Type="Edm.Int32"/>
+				<Property Name="City" Type="Edm.String" MaxLength="40"/>
+				<Property Name="Region" Type="Edm.String" MaxLength="40"/>
+				<Property Name="Population" Type="Edm.Decimal" Precision="13" Scale="2"/>
+				<Property Name="CityOf_Iso_code" Type="Edm.String" MaxLength="3"/>
+				<Property Name="Country_name" Type="Edm.String" MaxLength="40"/>
+			</EntityType>
+			<Association Name="Country_CityType">
+				<End Type="default.EuropeType" Role="EuropePrincipal" Multiplicity="1"/>
+				<End Type="default.CitiesType" Role="CitiesDependent" Multiplicity="*"/>
+				<ReferentialConstraint>
+					<Principal Role="EuropePrincipal">
+						<PropertyRef Name="Iso_code"/>
+					</Principal>
+					<Dependent Role="CitiesDependent">
+						<PropertyRef Name="CityOf_Iso_code"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<EntityContainer Name="v2" m:IsDefaultEntityContainer="true">
+				<EntitySet Name="Europe" EntityType="default.EuropeType"/>
+				<EntitySet Name="Cities" EntityType="default.CitiesType"/>
+				<AssociationSet Name="Country_City" Association="default.Country_CityType">
+					<End Role="EuropePrincipal" EntitySet="Europe"/>
+					<End Role="CitiesDependent" EntitySet="Cities"/>
+				</AssociationSet>
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
